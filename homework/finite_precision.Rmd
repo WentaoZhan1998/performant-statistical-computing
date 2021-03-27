@@ -18,6 +18,8 @@ for (pkg in required_packages) {
 }
 
 
+1+1
+
 source(file.path(path_to_script, "..", "R", "colors.R"))
 ```
 
