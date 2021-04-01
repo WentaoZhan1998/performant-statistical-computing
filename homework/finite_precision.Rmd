@@ -27,7 +27,7 @@ Figure out what the function `determine_precision` is trying to do and fill out 
 ```{r}
 
 are_numerically_distinguishable <- function(value1, value2) {
-  # Fill in
+  return(abs(value1-value2)!=0)
 }
 
 determine_precision <- function(init_upper_bound = 1) {
@@ -70,10 +70,21 @@ est_num_expected_duplicate <- function (n_draw, n_choice) {
 n_unique_double <- 2^53 # Number of unique machine-representable values in [0, 1].
 n_draw <- 10^6
 
-# Fill in
+count_duplicate <- function(n_draw){
+  sample <- runif(n_draw)
 
+  return(sum(duplicated(sample+1-1))) # +1-1 to avoid the problem caused by the accuracy near 0.
+}
+
+est_duplicate <- mean(replicate(1000, count_duplicate(n_draw)))
+expected_duplicate <- est_num_expected_duplicate(n_draw, n_unique_double)
+
+print(sprintf(
+  "The expected number of duplicates is %.3g while the estimated number of duplicates is %.3g. (The estimator comes from the mean of 1000 trials)", 
+  expected_duplicate, est_duplicate
+))
 ```
-
+\emph{The expected number does not agree with the estimated one and there seems to be a $10^6$ times difference. A guess on the phenomenon is that the random number generating process ('runif') does not reach the accuracy of $2^{-52}$.}
 
 # Problem 3
 You have learned in the class that the centered difference $\frac{f(x + \Delta x) - f(x - \Delta x)}{2 \Delta x}$ approximates the derivative $f'(x)$ up to an $O(\Delta x^2)$ error.
@@ -82,18 +93,20 @@ We evaluate its derivative using an analytical formula and compare it to the cen
 Plot the relative error in a log-log scale.
 What do you expect the slope of the plotted line to be?
 
+\emph{A slope of $-2$ is expected since the error is of rate $O(\Delta x^2)$.}
+
 ```{r}
 #' Approximate derivative via centered-difference approximation
 approximate_deriv <- function(func, x, dx) {
-  # Fill in
+  return((func(x+dx)-func(x-dx))/(2*dx))
 }
 
 log_logistic_func <- function(x) {
-  # Fill in
+  return(log(exp(x)/(1+exp(x))))
 }
 
 log_logistic_deriv <- function(x) {
-  # Fill in
+   return(1/(1+exp(x)))
 }
 
 # Calculate and plot the relative errors of finite difference approximations
@@ -102,7 +115,7 @@ x <- rnorm(1)
 
 log2_dx <- - seq(1, 52)
 numerical_deriv <- sapply(
-  2^log2_dx, function(dx) approximate_deriv(log_logistic_func, x, dx)
+  2^log2_dx, function(dx){approximate_deriv(log_logistic_func, x, dx)}
 )
 analytical_deriv <- log_logistic_deriv(x)
 rel_err <- abs(
@@ -126,7 +139,11 @@ plot(
 Does your output agree with what you expected? 
 Explain the observed phenomenon.
 
+\emph{The plotted line has two parts. The first part has slope $-2$, which is the same as expected. However, the second part has slope approximately $1$. The phenomenon comes from the formula $f(x+\Delta x)-f(x-\Delta x)$, which should be expressed by $2xf'(x)+C(\Delta x^3)+o(\Delta x^3) + \delta$. The last term is the system error of the order $10^{-16}$. When $\Delta x$ decreases, the error $C(\Delta x^3)$ will be dominated by $\delta$ after the threshold $2^{-52/3}$. And the dominant error then will be $\delta/2\Delta x = O(1/\Delta x)$, the slope of the line is thus approximately $1$ instead of $-2$.}
+
 **Bonus question 1:** What is the slope in the "latter part" of your plotted line?
+
+\emph{Explained in the last part.}
 
 **Bonus question 2:** Implement a strategy to automatically choose a near-optimal $\Delta x$ for numerically approximating the derivative of a given function via centered difference. (Hint: first get a crude estimate of $f'(x)$ and refine it at the next iteration.)
 
