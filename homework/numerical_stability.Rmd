@@ -60,7 +60,7 @@ loc_new <- seq(.41, .59, .01)
 
 ```{r, fig.dim=c(8, 5), fig.align='center'}
 svd <- svd(Sigma_obs)
-k = floor(quantile(svd$d, 0.99)+1)
+k = which.max(cumsum(svd$d)>0.9999*sum(svd$d))
 Sigma_k <- svd$u[,1:k] %*% diag(1/svd$d[1:k]) %*% t(svd$v[,1:k])
 
 loc_all <- c(loc_obs, loc_new)
@@ -111,8 +111,8 @@ points(
   y = y_new,
   col = jhu_color$spiritBlue
 )
-points(x = loc_new, y = CI_U)
-points(x = loc_new, y = CI_L)
+points(x = loc_new, y = CI_U, type = 'l')
+points(x = loc_new, y = CI_L, type = 'l')
 ```
 
 ## Part 3: Kriging based on an alternative GP covariance function
@@ -150,7 +150,7 @@ v_1 <- solve(Sigma_obs_matern, y_obs)
 
 # use eigen decomposition
 svd_m <- svd(Sigma_obs_matern)
-k = floor(quantile(svd_m$d, 0.99)+1)
+k = which.max(cumsum(svd$d)>0.9999*sum(svd$d))
 Sigma_k_matern <- svd_m$u[,1:k] %*% diag(1/svd_m$d[1:k]) %*% t(svd_m$v[,1:k])
 v_2 <- as.vector(Sigma_k_matern%*%y_obs_matern)
 
