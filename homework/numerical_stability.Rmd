@@ -150,8 +150,8 @@ v_1 <- solve(Sigma_obs_matern, y_obs)
 
 # use eigen decomposition
 svd_m <- svd(Sigma_obs_matern)
-k = which.max(cumsum(svd$d)>0.9999*sum(svd$d))
-Sigma_k_matern <- svd_m$u[,1:k] %*% diag(1/svd_m$d[1:k]) %*% t(svd_m$v[,1:k])
+k_m = which.max(cumsum(svd_m$d)>0.9999*sum(svd_m$d))
+Sigma_k_matern <- svd_m$u[,1:k_m] %*% diag(1/svd_m$d[1:k_m]) %*% t(svd_m$v[,1:k_m])
 v_2 <- as.vector(Sigma_k_matern%*%y_obs_matern)
 
 print(sprintf(
