@@ -16,7 +16,10 @@ for (pkg in required_packages) {
   library(pkg, character.only = TRUE)
 }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 source(file.path(path_to_script, "..", "R", "colors.R"))
@@ -67,6 +70,7 @@ est_num_expected_duplicate <- function (n_draw, n_choice) {
 n_unique_double <- 2^53 # Number of unique machine-representable values in [0, 1].
 n_draw <- 10^6
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 count_duplicate <- function(n_draw){
   sample <- runif(n_draw)
@@ -77,6 +81,14 @@ count_duplicate <- function(n_draw){
 est_duplicate <- mean(replicate(1000, count_duplicate(n_draw)))
 expected_duplicate <- est_num_expected_duplicate(n_draw, n_unique_double)
 
+=======
+count_duplicate <- function(n_draw){
+  sample <- runif(n_draw)
+  return(sum(duplicated(sample+1-1))) # +1-1 to avoid the problem caused by the accuracy near 0.
+}
+est_duplicate <- mean(replicate(1000, count_duplicate(n_draw)))
+expected_duplicate <- est_num_expected_duplicate(n_draw, n_unique_double)
+>>>>>>> Stashed changes
 =======
 count_duplicate <- function(n_draw){
   sample <- runif(n_draw)

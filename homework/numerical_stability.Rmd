@@ -11,7 +11,6 @@ for (pkg in required_packages) {
   }
   library(pkg, character.only = TRUE)
 }
-
 source(file.path("..", "R", "colors.R"))
 ```
 
@@ -36,10 +35,15 @@ Copy the synthetic observation from there (the one defined on the range $[0, 0.4
 sq_exp_cov <- function(dist, range) {
   return(exp(-(dist / range)^2))
 }
+<<<<<<< Updated upstream
 
 loc_obs <- c(seq(0, .4, .01), seq(.6, 1, .01))
 n_obs <- length(loc_obs)
 
+=======
+loc_obs <- c(seq(0, .4, .01), seq(.6, 1, .01))
+n_obs <- length(loc_obs)
+>>>>>>> Stashed changes
 set.seed(2021)
 corr_range <- .2
 dist_obs <- as.matrix(dist(loc_obs))
@@ -62,13 +66,19 @@ loc_new <- seq(.41, .59, .01)
 svd <- svd(Sigma_obs)
 k = which.max(cumsum(svd$d)>0.9999*sum(svd$d))
 Sigma_k <- svd$u[,1:k] %*% diag(1/svd$d[1:k]) %*% t(svd$v[,1:k])
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 loc_all <- c(loc_obs, loc_new)
 n_all = length(loc_all)
 dist_all <- as.matrix(dist(loc_all))
 cov = sq_exp_cov(dist_all, corr_range)[(n_obs+1):n_all, 1:n_obs]
 y_new = cov %*% Sigma_k %*% y_obs
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 solid_circle_index <- 19
 plot(
   loc_obs,
@@ -96,7 +106,10 @@ Sigma_new = sq_exp_cov(dist_all, corr_range)[(n_obs+1):n_all, (n_obs+1):n_all]
 var = diag(Sigma_new - cov %*% Sigma_k %*% t(cov))
 CI_U = y_new + 1.96*sqrt(var)
 CI_L = y_new - 1.96*sqrt(var)
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 plot(
   loc_obs,
   y_obs,
@@ -140,6 +153,7 @@ Do we get the same answer as the one based on eigen decomposition?
 ```{r}
 Sigma_obs_matern <- matern_cov(dist_obs, corr_range)
 y_obs_matern <- mvrnorm(mu = rep(0, n_obs), Sigma = Sigma_obs_matern)
+<<<<<<< Updated upstream
 
 print(sprintf(
   "The condition number of the new covariance matrix is %.3g.", 
@@ -148,17 +162,30 @@ print(sprintf(
 # use solve function directly
 v_1 <- solve(Sigma_obs_matern, y_obs)
 
+=======
+print(sprintf(
+  "The condition number of the new covariance matrix is %.3g.", 
+  kappa(Sigma_obs_matern)))
+# use solve function directly
+v_1 <- solve(Sigma_obs_matern, y_obs)
+>>>>>>> Stashed changes
 # use eigen decomposition
 svd_m <- svd(Sigma_obs_matern)
 k_m = which.max(cumsum(svd_m$d)>0.9999*sum(svd_m$d))
 Sigma_k_matern <- svd_m$u[,1:k_m] %*% diag(1/svd_m$d[1:k_m]) %*% t(svd_m$v[,1:k_m])
 v_2 <- as.vector(Sigma_k_matern%*%y_obs_matern)
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 print(sprintf(
   "The relative difference is %.3g, which is quiite significant. The two methods give very different answers.",
   norm(v_1-v_2, '2')/norm(v_1,'2')
 ))
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 ```
 
 **Bonus question:** Symmetric positive-definite matrices can be inverted more quickly via the _Cholesky decomposition_ $\boldsymbol{L} \boldsymbol{L}^\intercal = \boldsymbol{A}$ than via the LU or QR decomposition. 
